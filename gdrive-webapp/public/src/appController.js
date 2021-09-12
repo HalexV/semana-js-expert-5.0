@@ -38,6 +38,7 @@ export default class AppController {
 
   updateProgress(file, percent) {
     const uploadingFiles = this.uploadingFiles
+    
     const totalFiles = uploadingFiles.size
 
     file.percent = percent
@@ -46,7 +47,8 @@ export default class AppController {
       .map(({ percent }) => percent ?? 0)
       .reduce((total, current) => total + current, 0)
 
-    this.viewManager.updateStatus(Math.round(total/totalFiles))
+    
+      this.viewManager.updateStatus(Math.round(total/totalFiles))
   }
 
   async onFileChange(files) {
