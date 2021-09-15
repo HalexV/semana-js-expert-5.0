@@ -61,9 +61,15 @@ export default class Routes {
   }
 
   async get(request, response) {
-    const files = await this.fileHelper.getFilesStatus(this.downloadsFolder)
-    response.writeHead(200)
-    response.end(JSON.stringify(files))
+    try{
+      const files = await this.fileHelper.getFilesStatus(this.downloadsFolder)
+      response.writeHead(200)
+      response.end(JSON.stringify(files))
+    }catch(error) {
+      logger.error(error)
+      response.writeHead(500)
+      response.end(JSON.stringify({error: 'Internal Server Error'}))
+    }
   }
 
   handler(request, response) {
