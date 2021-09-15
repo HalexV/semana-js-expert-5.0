@@ -25,6 +25,7 @@ describe('Routes test suite', () => {
 
   beforeEach(() => {
     jest.spyOn(logger, 'info').mockImplementation()
+    jest.spyOn(logger, 'error').mockImplementation()
   })
 
   describe('setSocketInstance', () => {
@@ -125,6 +126,22 @@ describe('Routes test suite', () => {
 
       expect(params.response.writeHead).toHaveBeenCalledWith(200)
       expect(params.response.end).toHaveBeenCalledWith(JSON.stringify(filesStatusesMock))
+    })
+
+    test('should return 500 if getFilesStatus throws', async () => {
+      const routes = new Routes()
+      const params = {
+        ...defaultParams
+      }
+      
+      jest.spyOn(routes.fileHelper, routes.fileHelper.getFilesStatus.name)
+        .mockImplementation(async () => new Promise((resolve, reject) => reject(new Error())))
+
+      params.request.method = 'GET'
+      await routes.handler(...params.values())
+
+      expect(params.response.writeHead).toHaveBeenCalledWith(500)
+      expect(params.response.end).toHaveBeenCalledWith(JSON.stringify({error: 'Internal Server Error'}))
     })
   })
   
